@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -37,13 +38,9 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $user = $request->user();
-        $post = new Post();
-        $post->title= $request->title;
-        $post->excerpt = $request->excerpt;
-        $post->body = $request->desc;
+        // dd($request->all());
+        $request->user()->posts()->create($request->all());
 
-        $user->posts()->save($post);
         return redirect(route("create-post"))->with(["status"=>"post created !"]);
     }
 
@@ -81,7 +78,7 @@ class PostController extends Controller
        $post::where("id",$id)->update([
            "title"=>$request->title,
            "excerpt"=>$request->excerpt,
-           "body"=>$request->desc
+           "body"=>$request->body
        ]);
 
        return redirect(route("dashboard"))->with(["status"=>"post updated"]);
