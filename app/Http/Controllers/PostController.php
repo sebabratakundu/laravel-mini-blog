@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostValidation;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -36,10 +37,10 @@ class PostController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostValidation $request)
     {
         // dd($request->all());
-        $request->user()->posts()->create($request->all());
+        $request->user()->posts()->create($request->validated());
 
         return redirect(route("create-post"))->with(["status"=>"post created !"]);
     }
@@ -73,13 +74,9 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post,$id)
+    public function update(PostValidation $request, Post $post,$id)
     {  
-       $post::where("id",$id)->update([
-           "title"=>$request->title,
-           "excerpt"=>$request->excerpt,
-           "body"=>$request->body
-       ]);
+       $post::where("id",$id)->update($request->validated());
 
        return redirect(route("dashboard"))->with(["status"=>"post updated"]);
     }
