@@ -22,7 +22,8 @@ Route::get('/', function () {
     if(!$posts){
         throw new ModelNotFoundException();
     }
-    return view('welcome',["posts"=>$posts]);
+    cache()->put("all.posts",$posts,now()->addMinute(20));
+    return view('welcome');
 })->name("home");
 
 Route::get("/show/post/{id}",function($id){

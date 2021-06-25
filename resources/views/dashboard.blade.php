@@ -14,7 +14,7 @@
                 </h2>
                     <hr class="mb-5">
                     <div class="flex flex-wrap justify-evenly">
-                        @forelse($posts as $post)
+                        @forelse(cache()->get('posts') as $post)
                             <div class="w-64 max-w-sm rounded overflow-hidden shadow-lg mb-10">
                                 <div class="px-6 py-4">
                                     <div class="font-bold text-xl mb-2"><a href="{{ route('posts.show',$post) }}">{{ $post->title }}</a></div>

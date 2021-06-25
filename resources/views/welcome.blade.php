@@ -41,14 +41,14 @@
                     @endauth
                 </div>
             @endif
-            @isset($posts)
+            @if(cache()->has('all.posts'))
                 <h2 class="block mb-5 md:mb-10 font-bold text-3xl text-center bg-purple-100 text-purple-700 sm:rounded-full px-5 py-2 md:mt-0 mt-10">{{ __("Mini Blog") }}</h2>
                <div class="container pt-10 md:pt-0 px-5 md:px-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                @foreach($posts as $post)
+                @foreach(cache()->get('all.posts') as $post)
                 <x-all-posts :post="$post"></x-all-posts>
                 @endforeach
                </div>
-            @endisset
+            @endif
         </div>
     </body>
 </html>
