@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PostController;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,20 +19,21 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     $posts = Post::all();
+    if(!$posts){
+        throw new ModelNotFoundException();
+    }
     return view('welcome',["posts"=>$posts]);
 })->name("home");
 
-Route::get("/show/post/{id}",[PostController::class,"show"])->name("show-post");
+Route::get("/show/post/{id}",function($id){
+    $post = Post::findOrFail($id);
+    return view('showPost',["post"=>$post]);
+})->name("show-post");
+
+
 Route::middleware("auth")->group(function(){
-    Route::get('/dashboard', [PostController::class,'index'])->name('dashboard');
-
-    Route::get("/create-post",[PostController::class,"create"])->name("create-post");
-    Route::post("/create-post",[PostController::class,"store"])->name("store-post");
-
-    Route::get("/edit/post/{id}",[PostController::class,"edit"])->name("edit-post");
-    Route::put("/edit/post/{id}",[PostController::class,"update"])->name("update-post");
-
-    Route::get("/delete/post/{id}",[PostController::class,"destroy"])->name("delete-post");
+    Route::get("/dashboard",[DashboardController::class,'index'])->name("dashboard");
+    Route::resource("posts",PostController::class);
 });
 
 require __DIR__.'/auth.php';

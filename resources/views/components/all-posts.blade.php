@@ -1,6 +1,6 @@
 <div class="w-full rounded bg-white overflow-hidden shadow-lg mb-10">
                                 <div class="px-4 py-4">
-                                    <div class="font-bold text-xl mb-2"><a href="{{ url('show/post',$post->id) }}">{{ $post->title }}</a></div>
+                                    <div class="font-bold text-xl mb-2"><a href="{{ route('show-post',$post->id) }}">{{ $post->title }}</a></div>
                                     <p class="text-gray-700 text-base mb-3">
                                     {{ $post->excerpt }}
                                     </p>

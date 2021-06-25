@@ -17,16 +17,22 @@
                         @forelse($posts as $post)
                             <div class="w-64 max-w-sm rounded overflow-hidden shadow-lg mb-10">
                                 <div class="px-6 py-4">
-                                    <div class="font-bold text-xl mb-2"><a href="{{ url('show/post',$post->id) }}">{{ $post->title }}</a></div>
+                                    <div class="font-bold text-xl mb-2"><a href="{{ route('posts.show',$post) }}">{{ $post->title }}</a></div>
                                     <p class="text-gray-700 text-base">
                                     {{ $post->excerpt }}
                                     </p>
                                     <span class="inline-block py-1 text-sm font-semibold text-grey-500 mr-2 mb-2">Author : {{ $post->user->name }}</span>
                                 </div>
+                                @canany(['update','delete'],$post)
                                 <div class="px-6 pt-4 pb-2">
-                                    <a href="{{ url('edit/post',$post->id) }}" class="bg-yellow-100 inline-block rounded-full px-3 py-1 text-sm font-semibold text-yellow-700 mr-2 mb-2">Edit</a>
-                                    <a href="{{ url('delete/post',$post->id) }}" class="bg-red-100 inline-block rounded-full px-3 py-1 text-sm font-semibold text-red-700 mr-2 mb-2">Delete</a>
+                                    <a href="{{ route('posts.edit',$post) }}" class="bg-yellow-100 inline-block rounded-full px-3 py-1 text-sm font-semibold text-yellow-700 mr-2 mb-2">Edit</a>
+                                    <form action="{{ route('posts.destroy',$post) }}" method="POST" class="inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="bg-red-100 inline-block rounded-full px-3 py-1 text-sm font-semibold text-red-700 mr-2 mb-2" onclick="return confirm('Are you sure ?');">Delete</button>
+                                    </form>
                                 </div>
+                                @endcanany
                             </div>
                             @empty
                             <p class="bg-red-100 rounded-full px-5 py-2 font-semibold text-red-700">No post found !</p>

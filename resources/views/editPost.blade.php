@@ -10,8 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
                     <x-auth-validation-errors class="mb-4" />
-                    <x-post-form :title="$post->title" :excerpt="$post->excerpt" :desc="$post->body"
-                    btnTxt="Update"></x-post-form>
+                    <x-post-form :post="$post ? $post : ''" btnTxt="Update"></x-post-form>
                     @if(session()->has('status'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
                     <strong class="font-bold">{{session('status')}}</strong>

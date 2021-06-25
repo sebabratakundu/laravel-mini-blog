@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostValidation;
 use App\Models\Post;
-use App\Models\User;
-use Illuminate\Http\Request;
+// use App\Models\User;
+// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+// use Illuminate\Support\Facades\Gate;
 
 class PostController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
@@ -40,9 +42,24 @@ class PostController extends Controller
     public function store(PostValidation $request)
     {
         // dd($request->all());
-        $request->user()->posts()->create($request->validated());
+        // if(Gate::denies("isAdmin",Post::class)){
+        //     abort(403,"You do not have access to create post, sorry !");
+        // }
+        
+        // Gate::authorize("isAdmin");
 
-        return redirect(route("create-post"))->with(["status"=>"post created !"]);
+        // $response = Gate::inspect("isAdmin");
+        // if($response->allowed()){
+
+        //     $request->user()->posts()->create($request->validated());
+        //     return redirect(route("create-post"))->with(["status"=>"post created !"]);
+        // }else{
+
+        //     return $response->message();
+        // }
+
+        $request->user()->posts()->create($request->validated());
+        return redirect(route("posts.create"))->with(["status"=>"post created !"]);
     }
 
     /**
@@ -51,9 +68,10 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post,$id)
+    public function show(Post $post)
     {
-        return view("showPost",["post"=>$post::find($id)]);
+        $this->authorize("view",$post);
+        return view("showPost",["post"=>$post]);
     }
 
     /**
@@ -62,9 +80,10 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function edit(Post $post, $id)
+    public function edit(Post $post)
     {
-        return view("editPost",["post"=>$post::find($id)]);
+        $this->authorize('update',$post);
+        return view("editPost",["post"=>$post]);
     }
 
     /**
@@ -74,11 +93,12 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function update(PostValidation $request, Post $post,$id)
+    public function update(PostValidation $request,Post $post)
     {  
-       $post::where("id",$id)->update($request->validated());
+        $this->authorize('update',$post);
+        $post->update($request->validated());
 
-       return redirect(route("dashboard"))->with(["status"=>"post updated"]);
+        return redirect(route("dashboard"))->with(["status"=>"post updated"]);
     }
 
     /**
@@ -87,9 +107,10 @@ class PostController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post,$id)
+    public function destroy(Post $post)
     {
-        $post::destroy($id);
+        $this->authorize('delete',$post);
+        $post->delete();
         return redirect(route("dashboard"))->with(["status"=>"post deleted"]);
     }
 }
